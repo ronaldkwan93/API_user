@@ -42,3 +42,11 @@ def add_user():
     db.session.commit()
     return {'id': user.id}
 
+@app.route('/users/<id>', methods=['DELETE'])
+def delete_user(id):
+    user = User.query.get(id)
+    if user is None:
+        return {"error": "not found"}
+    db.session.delete(user)
+    db.session.commit()
+    return {"message": "User deleted"}
