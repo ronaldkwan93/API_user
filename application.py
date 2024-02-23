@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 app = Flask(__name__)
 from flask_sqlalchemy import SQLAlchemy
 
@@ -29,4 +29,16 @@ def get_users():
 
         output.append(user_data)
     return {"users" : output}
+
+@app.route('/users/<id>')
+def get_user(id):
+    user = User.query.get_or_404(id)
+    return {"name": user.name, "password": user.password}
+
+@app.route('/users', methods=['POST'])
+def add_user():
+    user = User(name=request.json['name'], password=request.json['password'])
+    db.session.add(user)
+    db.session.commit()
+    return {'id': user.id}
 
